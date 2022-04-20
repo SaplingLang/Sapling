@@ -1,6 +1,9 @@
 package dev.npex42.sapling;
 
 
+import org.junit.Assert;
+import org.junit.Test;
+
 public class Token {
 
     private final TokenType type;
@@ -23,6 +26,22 @@ public class Token {
 
     public Object value() {
         return value;
+    }
+
+    public int integer() throws InvalidType {
+        if (this.value instanceof Integer) {
+            return (Integer) this.value;
+        } else {
+            throw new InvalidType("Cannot cast value to an int.");
+        }
+    }
+
+    public String string() throws InvalidType {
+        if (this.value instanceof String) {
+            return (String) this.value;
+        } else {
+            throw new InvalidType("Cannot cast value to an String.");
+        }
     }
 
     public TokenType type() {
@@ -60,4 +79,6 @@ public class Token {
         EQUAL,
         EOF
     }
+
+
 }

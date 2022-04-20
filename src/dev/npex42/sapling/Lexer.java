@@ -81,7 +81,7 @@ public class Lexer {
                 if (isDigit(c)) {
                     integer();
                     return;
-                } else if (isLetter(c)) {
+                } else if (isLetter(c) | c == '_') {
                     identifier();
                     return;
                 }
