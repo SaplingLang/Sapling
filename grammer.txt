@@ -1,0 +1,4 @@
+
+
+identifier := [A-Za-z]+(alphanumeric | '::' | '_')*
+integer := [0-9]+
