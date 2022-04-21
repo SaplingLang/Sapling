@@ -1,7 +1,9 @@
 package dev.npex42.sapling;
 
-import static dev.npex42.sapling.Token.*;
-import static dev.npex42.sapling.Token.TokenType.*;
+import dev.npex42.sapling.tokens.Token;
+import dev.npex42.sapling.tokens.TokenType;
+
+import static dev.npex42.sapling.tokens.TokenType.*;
 
 import java.util.*;
 

@@ -1,8 +1,7 @@
-package dev.npex42.sapling;
+package dev.npex42.sapling.tokens;
 
 
-import org.junit.Assert;
-import org.junit.Test;
+import dev.npex42.sapling.InvalidType;
 
 public class Token {
 
@@ -11,6 +10,14 @@ public class Token {
 
     private final int line;
     private final int column;
+
+    public Token(TokenType type) {
+        this(type, null, 0, 0);
+    }
+
+    public Token(TokenType type, Object value) {
+        this(type, value, 0, 0);
+    }
 
     public Token(TokenType type, Object value, int line, int column) {
         this.type = type;
@@ -48,36 +55,22 @@ public class Token {
         return type;
     }
 
+    public boolean equals(Object other) {
+        if (other instanceof Token) {
+            Token other_token = (Token) other;
+            return (other_token.value.equals(value)) && (other_token.type.equals(type));
+        } else if (other instanceof TokenType) {
+            TokenType other_type = (TokenType) other;
+            return other_type == type;
+        } else {
+            return false;
+        }
+    }
+
+
     @Override
     public String toString() {
         return type + "(" + value + "," + line + ":" + column + ")";
-    }
-
-    public enum TokenType {
-        INTEGER,
-        IDENTIFIER,
-        STRING,
-
-        LET,
-        PRINT,
-        FN,
-        PUBLIC,
-        PRIVATE,
-
-        PLUS,
-        MINUS,
-        SLASH,
-        STAR,
-        SEMICOLON,
-
-        LPAREN,
-        RPAREN,
-        LCURLY,
-        RCURLY,
-        COMMA,
-
-        EQUAL,
-        EOF
     }
 
 

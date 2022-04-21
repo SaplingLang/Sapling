@@ -1,15 +1,13 @@
 package dev.npex42.sapling.tests;
 
 import dev.npex42.sapling.Lexer;
-import dev.npex42.sapling.Token;
+import dev.npex42.sapling.tokens.Token;
 
-import static dev.npex42.sapling.Token.*;
-import static dev.npex42.sapling.Token.TokenType.*;
+import static dev.npex42.sapling.tokens.TokenType.*;
 
+import dev.npex42.sapling.tokens.TokenType;
 import org.junit.*;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class LexerSpec {
