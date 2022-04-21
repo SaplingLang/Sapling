@@ -1,5 +1,7 @@
 package dev.npex42.sapling;
 
+import dev.npex42.sapling.tokens.Token;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -24,11 +26,6 @@ public class Main {
 
         System.out.println();
 
-        if (!lexer.hadError()) {
-            Parser parser = new Parser(tokens);
 
-            System.out.println("==== AST ====");
-            parser.parse().print(0);
-        }
     }
 }

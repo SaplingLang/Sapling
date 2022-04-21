@@ -1,7 +1,9 @@
 package dev.npex42.sapling;
 
-import static dev.npex42.sapling.Token.*;
-import static dev.npex42.sapling.Token.TokenType.*;
+import dev.npex42.sapling.tokens.Token;
+import dev.npex42.sapling.tokens.TokenType;
+
+import static dev.npex42.sapling.tokens.TokenType.*;
 
 import java.util.*;
 
@@ -81,7 +83,7 @@ public class Lexer {
                 if (isDigit(c)) {
                     integer();
                     return;
-                } else if (isLetter(c)) {
+                } else if (isLetter(c) | c == '_') {
                     identifier();
                     return;
                 }
