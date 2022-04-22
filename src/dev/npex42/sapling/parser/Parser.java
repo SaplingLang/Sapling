@@ -1,11 +1,16 @@
 package dev.npex42.sapling.parser;
 
+import dev.npex42.sapling.SyntaxNode;
+import dev.npex42.sapling.parser.ast.operators.BinaryOp;
+import dev.npex42.sapling.parser.ast.operators.UnaryOp;
+import dev.npex42.sapling.parser.ast.values.Expression;
 import dev.npex42.sapling.tokens.Token;
-import dev.npex42.sapling.TokenScanner;
+import dev.npex42.sapling.tokens.TokenScanner;
 import dev.npex42.sapling.parser.ast.values.IntNode;
 import dev.npex42.sapling.parser.ast.values.StringNode;
 import dev.npex42.sapling.parser.ast.values.ValueNode;
 import dev.npex42.sapling.errors.ParseError;
+import dev.npex42.sapling.tokens.TokenType;
 
 import static dev.npex42.sapling.tokens.TokenType.*;
 
@@ -18,7 +23,43 @@ public class Parser {
         scanner = new TokenScanner(tokens);
     }
 
-    public ValueNode<?> value() {
+    public Parser(TokenScanner scanner) {
+        this.scanner = scanner;
+    }
+
+    public SyntaxNode parse() {
+        if (scanner.isEmpty()) {
+            return null;
+        }
+
+        return unary();
+    }
+
+    public Expression unary() {
+        if (scanner.match(MINUS)) {
+            TokenType operator = scanner.popType();
+            Expression expr = value();
+            return new UnaryOp(operator, expr);
+        } else {
+            return value();
+        }
+
+    }
+
+    public Expression addition() {
+        Expression expr = unary();
+        while (scanner.match(PLUS, MINUS)) {
+            TokenType operator = scanner.popType();
+
+            Expression rhs = unary();
+
+            expr = new BinaryOp(expr, operator, rhs);
+        }
+
+        return expr;
+    }
+
+    public Expression value() {
         if (scanner.match(INTEGER, IDENTIFIER, STRING)) {
             switch (scanner.peek().type()) {
                 case INTEGER -> {

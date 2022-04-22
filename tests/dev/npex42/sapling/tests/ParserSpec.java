@@ -1,6 +1,8 @@
 package dev.npex42.sapling.tests;
 
 import dev.npex42.sapling.parser.Parser;
+import dev.npex42.sapling.parser.ast.operators.BinaryOp;
+import dev.npex42.sapling.parser.ast.values.ValueNode;
 import dev.npex42.sapling.tokens.Token;
 import dev.npex42.sapling.tokens.TokenType;
 import org.junit.Assert;
@@ -8,6 +10,9 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static dev.npex42.sapling.tokens.TokenType.PLUS;
+import static junit.framework.Assert.assertEquals;
 
 public class ParserSpec {
 
@@ -51,7 +56,16 @@ public class ParserSpec {
 
         Parser parser = new Parser(tokens);
 
-        Assert.assertEquals(10, parser.value().value());
+        Assert.assertEquals((Integer) 10, ((ValueNode<Integer>) parser.value()).value());
+    }
+
+    @Test
+    public void should_also_return_ValueNode_INT_10() {
+        List<Token> tokens = buildTokenList(new Token(TokenType.INTEGER, 10));
+
+        Parser parser = new Parser(tokens);
+
+        Assert.assertEquals((Integer) 10, ((ValueNode<Integer>) parser.unary()).value());
     }
 
     @Test
@@ -60,7 +74,7 @@ public class ParserSpec {
 
         Parser parser = new Parser(tokens);
 
-        Assert.assertEquals("TEST", parser.value().value());
+        Assert.assertEquals("TEST", ((ValueNode<String>) parser.value()).value());
     }
 
     @Test
@@ -69,7 +83,24 @@ public class ParserSpec {
 
         Parser parser = new Parser(tokens);
 
-        Assert.assertEquals("TEST", parser.value().value());
+        Assert.assertEquals("TEST", ((ValueNode<String>) parser.value()).value());
+    }
+
+    @Test
+    public void should_return_BinaryOp_Plus() {
+        List<Token> tokens = buildTokenList(
+                new Token(TokenType.INTEGER, 10),
+                new Token(PLUS),
+                new Token(TokenType.INTEGER, 20)
+        );
+
+        Parser parser = new Parser(tokens);
+
+        BinaryOp op = (BinaryOp) parser.addition();
+
+        assertEquals(10, op.lhs.evaluate());
+        assertEquals(PLUS, op.op);
+        assertEquals(20, op.rhs.evaluate());
     }
 
 }

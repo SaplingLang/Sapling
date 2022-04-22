@@ -2,7 +2,7 @@ package dev.npex42.sapling.parser.ast.values;
 
 import dev.npex42.sapling.SyntaxNode;
 
-public class ValueNode<T> extends SyntaxNode {
+public class ValueNode<T> extends Expression<T> {
     protected final T value;
 
     public ValueNode(T value) {
@@ -13,4 +13,8 @@ public class ValueNode<T> extends SyntaxNode {
         return value;
     }
 
+    @Override
+    public T evaluate() {
+        return value;
+    }
 }

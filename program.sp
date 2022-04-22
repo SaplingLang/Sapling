@@ -1,3 +1,1 @@
-public fn main(args) {
-
-}
+10 + 10

@@ -5,13 +5,14 @@ import dev.npex42.sapling.tokens.Token;
 
 import static dev.npex42.sapling.tokens.TokenType.*;
 
-import dev.npex42.sapling.TokenScanner;
+import dev.npex42.sapling.tokens.TokenScanner;
 import dev.npex42.sapling.tokens.TokenType;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.List;
 
+import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
@@ -45,6 +46,18 @@ public class TokenScannerSpec {
     }
 
     @Test
+    public void non_empty_scanner_should_return_true_on_match_if_types_match() {
+        TokenScanner scanner = TokenScanner.from(createToken(INTEGER));
+        assertTrue(scanner.match(INTEGER));
+    }
+
+    @Test
+    public void non_empty_scanner_should_return_false_on_match_if_types_dont_match() {
+        TokenScanner scanner = TokenScanner.from(createToken(IDENTIFIER));
+        assertFalse(scanner.match(INTEGER));
+    }
+
+    @Test
     public void non_empty_scanner_should_return_current_token_on_peek() {
         try {
             TokenScanner tsc = new TokenScanner(List.of(
@@ -56,4 +69,6 @@ public class TokenScannerSpec {
             fail("TokenScanner.peek() Threw: " + invalidOperation.getLocalizedMessage());
         }
     }
+
+
 }
