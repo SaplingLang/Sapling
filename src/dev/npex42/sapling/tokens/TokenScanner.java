@@ -72,4 +72,13 @@ public class TokenScanner {
     public boolean isEmpty() {
         return tokens.size() == 0;
     }
+
+    public boolean take(TokenType type) {
+        if (peekType() == type) {
+            pop();
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

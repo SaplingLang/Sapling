@@ -1,8 +1,7 @@
 package dev.npex42.sapling.parser.ast.values;
 
-public class IntNode extends ValueNode {
-
-    public IntNode(int value) {
+public class Lookup extends ValueNode {
+    public Lookup(Object value) {
         super(value);
     }
 }

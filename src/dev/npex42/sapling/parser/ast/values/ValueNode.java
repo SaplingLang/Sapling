@@ -2,19 +2,28 @@ package dev.npex42.sapling.parser.ast.values;
 
 import dev.npex42.sapling.SyntaxNode;
 
-public class ValueNode<T> extends Expression<T> {
-    protected final T value;
+public class ValueNode extends Expression {
+    protected final Object value;
 
-    public ValueNode(T value) {
+    public ValueNode(Object value) {
         this.value = value;
     }
 
-    public T value() {
+    public Object value() {
         return value;
     }
 
+    public int intValue() {
+        return (Integer) value;
+    }
+
+    public String stringValue() {
+        return (String) value;
+    }
+
+
     @Override
-    public T evaluate() {
-        return value;
+    public String toString() {
+        return "(" + value + ")";
     }
 }

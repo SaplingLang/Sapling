@@ -1,1 +1,2 @@
-10 + 10
+let foo = 10;
+print bar

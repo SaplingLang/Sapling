@@ -39,6 +39,11 @@ public class Lexer {
     private void primary() {
         char c = peek();
         switch (c) {
+
+            case '=':
+                emitToken(EQUAL);
+                break;
+
             // Arthimetic
             case '(':
                 emitToken(LPAREN);

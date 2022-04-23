@@ -26,7 +26,7 @@ public class ParserSpec {
 
         Parser parser = new Parser(tokens);
 
-        Assert.assertEquals((Integer) 10, parser.integer().value());
+        Assert.assertEquals(10, parser.integer().value());
 
     }
 
@@ -56,7 +56,7 @@ public class ParserSpec {
 
         Parser parser = new Parser(tokens);
 
-        Assert.assertEquals((Integer) 10, ((ValueNode<Integer>) parser.value()).value());
+        Assert.assertEquals(10, ((ValueNode) parser.value()).intValue());
     }
 
     @Test
@@ -65,7 +65,7 @@ public class ParserSpec {
 
         Parser parser = new Parser(tokens);
 
-        Assert.assertEquals((Integer) 10, ((ValueNode<Integer>) parser.unary()).value());
+        Assert.assertEquals(10, ((ValueNode) parser.unary()).intValue());
     }
 
     @Test
@@ -74,7 +74,7 @@ public class ParserSpec {
 
         Parser parser = new Parser(tokens);
 
-        Assert.assertEquals("TEST", ((ValueNode<String>) parser.value()).value());
+        Assert.assertEquals("TEST", ((ValueNode) parser.value()).stringValue());
     }
 
     @Test
@@ -83,7 +83,7 @@ public class ParserSpec {
 
         Parser parser = new Parser(tokens);
 
-        Assert.assertEquals("TEST", ((ValueNode<String>) parser.value()).value());
+        Assert.assertEquals("TEST", ((ValueNode) parser.value()).stringValue());
     }
 
     @Test
@@ -96,11 +96,13 @@ public class ParserSpec {
 
         Parser parser = new Parser(tokens);
 
-        BinaryOp op = (BinaryOp) parser.addition();
+        BinaryOp op = (BinaryOp) parser.sum();
+        ValueNode lhs = (ValueNode) op.lhs;
+        ValueNode rhs = (ValueNode) op.rhs;
 
-        assertEquals(10, op.lhs.evaluate());
+        assertEquals(10, lhs.intValue());
         assertEquals(PLUS, op.op);
-        assertEquals(20, op.rhs.evaluate());
+        assertEquals(20, rhs.intValue());
     }
 
 }

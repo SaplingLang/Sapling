@@ -5,7 +5,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import dev.npex42.sapling.Compiler;
+import dev.npex42.sapling.SyntaxNode;
 import dev.npex42.sapling.parser.Parser;
+import dev.npex42.sapling.parser.ast.statements.Print;
 import dev.npex42.sapling.parser.ast.values.Expression;
 import dev.npex42.sapling.tokens.TokenScanner;
 
@@ -22,11 +24,14 @@ public class Main {
         Parser parser = new Parser(scanner);
 
 
-        Expression expr = (Expression) parser.parse();
+        SyntaxNode root = parser.parse();
 
         Interpreter interpreter = new Interpreter();
-        System.out.println(interpreter.Evaluate(expr));
+        interpreter.Evaluate(root);
 
+        System.out.println(root);
+
+        System.out.println(interpreter.variables());
 
     }
 }

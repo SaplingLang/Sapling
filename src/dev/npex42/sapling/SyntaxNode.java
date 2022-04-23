@@ -10,4 +10,5 @@ public abstract class SyntaxNode {
                 ", column=" + column +
                 " }";
     }
+
 }
