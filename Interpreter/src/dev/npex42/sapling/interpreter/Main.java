@@ -17,7 +17,8 @@ public class Main {
             System.err.println("Usage: sapling <file>");
             System.exit(1);
         }
-        String file = Files.readString(Paths.get(args[0]));
+        String file_name = args[0];
+        String file = Files.readString(Paths.get(file_name));
 
         TokenScanner scanner = Compiler.tokenize(file);
 
@@ -26,12 +27,12 @@ public class Main {
 
         SyntaxNode root = parser.parse();
 
-        Interpreter interpreter = new Interpreter();
-        interpreter.Evaluate(root);
-
+        Interpreter interpreter = new Interpreter("MAIN");
         System.out.println(root);
+        interpreter.addVariable("@module", file_name.replaceAll("\\.sp", ""));
+        interpreter.Evaluate(root);
+        System.out.println(interpreter);
 
-        System.out.println(interpreter.variables());
 
     }
 }

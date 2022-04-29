@@ -1,2 +1,11 @@
-let foo = 10;
-print bar
+fn Goodbye() {
+    print "Goodbye, " + @module + "::" + @func;
+}
+
+fn Hello() {
+    print "Hello, " + @module + "::" + @func;
+    Goodbye();
+}
+
+Hello();
+

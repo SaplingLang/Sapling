@@ -3,9 +3,7 @@ package dev.npex42.sapling.parser;
 import dev.npex42.sapling.SyntaxNode;
 import dev.npex42.sapling.parser.ast.operators.BinaryOp;
 import dev.npex42.sapling.parser.ast.operators.UnaryOp;
-import dev.npex42.sapling.parser.ast.statements.Block;
-import dev.npex42.sapling.parser.ast.statements.Print;
-import dev.npex42.sapling.parser.ast.statements.Variable;
+import dev.npex42.sapling.parser.ast.statements.*;
 import dev.npex42.sapling.parser.ast.values.*;
 import dev.npex42.sapling.tokens.Token;
 import dev.npex42.sapling.tokens.TokenScanner;
@@ -45,17 +43,74 @@ public class Parser {
             return print();
         } else if (scanner.match(LET)) {
             return assignment();
+        } else if (scanner.match(FN)) {
+            return funcDecl();
+        } else if (scanner.match(IDENTIFIER)) {
+            return funcCall();
         } else {
             throw new ParseError("Expected Statement, Got:" + scanner.peekType());
         }
     }
 
-    public SyntaxNode print() {
-        if (scanner.take(PRINT)) {
-            return new Print(expr());
-        }
+    public Call funcCall() {
+        IdentNode name = identifier();
+        List<Expression> args = args();
+        expect(SEMICOLON);
+        return new Call(name, args);
+    }
 
-        throw new ParseError("Expected Keyword Print, Got " + scanner.peekType());
+    public FuncDecl funcDecl() {
+        expect(FN);
+        IdentNode name = identifier();
+        Arguments args = argsDecl();
+        Block body = block();
+
+        return new FuncDecl(name, args, body);
+    }
+
+    private Block block() {
+        expect(LCURLY);
+        List<SyntaxNode> statements = new ArrayList<>();
+        while (!scanner.match(RCURLY)) {
+            statements.add(Statement());
+        }
+        expect(RCURLY);
+
+        return new Block(statements);
+    }
+
+    // ArgsList := '(' (Identifier (','Identifier)*)? ')'
+    public Arguments argsDecl() {
+        expect(LPAREN);
+        List<IdentNode> args = new ArrayList<>();
+        while (!scanner.match(RPAREN)) {
+            args.add(identifier());
+            scanner.take(COMMA);
+        }
+        expect(RPAREN);
+
+        return new Arguments(args);
+    }
+
+    // ExprList := '(' (Expression (','Expression)*)? ')'
+    public List<Expression> args() {
+        expect(LPAREN);
+        List<Expression> args = new ArrayList<>();
+        while (!scanner.match(RPAREN)) {
+            args.add(expr());
+            scanner.take(COMMA);
+        }
+        expect(RPAREN);
+
+        return args;
+    }
+
+
+    public SyntaxNode print() {
+        expect(PRINT);
+        Expression expr = expr();
+        expect(SEMICOLON);
+        return new Print(expr);
     }
 
     public Variable assignment() {

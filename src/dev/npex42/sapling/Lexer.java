@@ -88,7 +88,7 @@ public class Lexer {
                 if (isDigit(c)) {
                     integer();
                     return;
-                } else if (isLetter(c) | c == '_') {
+                } else if (isLetter(c) | c == '_' | c == '@') {
                     identifier();
                     return;
                 }
@@ -100,7 +100,7 @@ public class Lexer {
 
     private void identifier() {
         String output = "";
-        while (isLetterOrDigit(peek()) | peek() == '_' | peek() == ':') {
+        while (isLetterOrDigit(peek()) | peek() == '_' | peek() == ':' | peek() == '@') {
             output += pop();
         }
         if (keywords.containsKey(output)) {

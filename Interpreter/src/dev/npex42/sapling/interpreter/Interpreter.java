@@ -11,11 +11,55 @@ import dev.npex42.sapling.tokens.*;
 import java.util.HashMap;
 
 public class Interpreter {
-
+    private final String caller;
+    private final Interpreter parent;
     private final HashMap<String, Object> variables = new HashMap<>();
 
+    public Interpreter(Interpreter parent, String caller) {
+        this.parent = parent;
+        this.caller = caller;
+    }
+
+    public Interpreter(String caller) {
+        this.parent = null;
+        this.caller = caller;
+    }
+
+    @Override
+    public String toString() {
+        return "Interpreter{" +
+                "caller='" + caller + '\'' +
+                ", parent=" + parent +
+                ", variables=" + variables +
+                '}';
+    }
+
+    public Object lookupVar(String name) {
+        if (parent != null) {
+            try {
+                return parent.lookupVar(name);
+            } catch (UndefinedVariable undefinedVariable) {
+            }
+
+        }
+
+        if (!variables.containsKey(name)) {
+            throw new UndefinedVariable(name);
+        }
+
+        return variables.get(name);
+    }
 
     public Object EvaluateLookup(IdentNode lookup) {
+
+        if (parent != null) {
+            try {
+                return parent.EvaluateLookup(lookup);
+            } catch (UndefinedVariable undefinedVariable) {
+            }
+
+        }
+
         if (!variables.containsKey(lookup.stringValue())) {
             throw new UndefinedVariable(lookup.stringValue());
         }
@@ -32,9 +76,30 @@ public class Interpreter {
             return EvaluateAssignment((Variable) node);
         } else if (node instanceof Block) {
             return EvalBlock((Block) node);
+        } else if (node instanceof FuncDecl) {
+            return EvalFuncDecl((FuncDecl) node);
+        } else if (node instanceof Call) {
+            return EvalCall((Call) node);
         } else {
             throw new InvalidType("Unrecognised Node Type.");
         }
+    }
+
+    public Object EvalCall(Call node) {
+        FuncDecl func = (FuncDecl) lookupVar(node.name.stringValue());
+        int argCount = func.arity();
+        Interpreter temp = new Interpreter(this, "");
+        for (int i = 0; i < argCount; i++) {
+            temp.addVariable(func.args.args.get(i).stringValue(), EvaluateExpression(node.args.get(i)));
+        }
+        temp.addVariable("@func", node.name.stringValue());
+
+        return temp.EvalBlock(func.body);
+    }
+
+    public Object EvalFuncDecl(FuncDecl func) {
+        variables.put(func.name.stringValue(), func);
+        return null;
     }
 
     public Object EvalBlock(Block block) {
@@ -145,13 +210,30 @@ public class Interpreter {
                     throw new InvalidOperation("Invalid Operator: " + operator);
                 }
             }
+        } else if (rhs instanceof String && lhs instanceof String) {
+            String lh = (String) lhs;
+            String rh = (String) rhs;
+            TokenType operator = expr.op;
+            switch (operator) {
+                case PLUS -> {
+                    return lh + rh;
+                }
+
+
+                default -> {
+                    throw new InvalidOperation("Invalid Operator: " + operator);
+                }
+            }
         } else {
-            throw new InvalidOperation("Can't Operator " + lhs + " to " + rhs);
+            throw new InvalidOperation("Can't Add " + lhs + " to " + rhs);
         }
 
 
     }
 
+    public void addVariable(String name, Object value) {
+        variables.put(name, value);
+    }
 
     public HashMap<String, Object> variables() {
         return variables;
